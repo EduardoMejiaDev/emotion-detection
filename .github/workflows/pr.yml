@@ -1,0 +1,30 @@
+name: Pull Request Workflow
+
+on:
+  pull_request:
+    branches:
+      - main
+      - web-app
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Use the desired runner environment
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+
+      - name: Install dependencies
+        run: |
+          pip install flask
+          pip install keras
+          pip install numpy
+          pip install opencv-python
+          pip3 install --upgrade tensorflow
+          pip install pillow
+
+      - name: Run tests
+        run: python TestEmotionDetector.py
