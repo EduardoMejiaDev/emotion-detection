@@ -30,4 +30,4 @@ copy these two files create model folder in your project directory and paste it.
 
 ### run your emotion detection test file
 
-`python TestEmotionDetector.py` at least for locally, it will run on `localhost:5000` and you must to hit `/video_feed` endpoint
+`python TestEmotionDetector.py` at least for locally, it will run on `localhost:5000` and you must to hit `/video_feed` endpoint.
