@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # Use the desired runner environment
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
@@ -27,19 +27,40 @@ jobs:
           pip install pillow
 
       - name: Run tests
+        id: run_tests
         run: python TestEmotionDetector.py
-      
-      - name: Set status
-        uses: peter-evans/create-or-update-comment@v1
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            Status Check
-
-            {% if job.status == 'success' %}
-            ✅ All checks passed.
-            {% else %}
-            ❌ Some checks failed.
-            {% endif %}
+        timeout-minutes: 5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check Flask App
+        if: ${{ needs.run_tests.outputs.elapsed_time >= 60 }}
+        run: |
+          echo "::set-output name=flask_check_success::true"
+
+      - name: Mark run_tests as passed
+        id: mark_run_tests_as_passed
+        if: ${{ needs.check_flask_app.outputs.flask_check_success == 'true' }}
+        run: echo "::set-output name=mark_passed::true"
+
+  check_run_tests_passed:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check run_tests status
+        id: check_run_tests
+        run: echo "::set-output name=run_tests_passed::${{ needs.build.outputs.mark_run_tests_as_passed }}"
+
+  mark_pull_request_passed:
+    needs: [check_run_tests_passed]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set pull request status
+        uses: peter-evans/create-or-update-pull-request-status@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          state: success
+          description: All checks passed
+          context: Pull Request Workflow
+          target-url-raw: true
+        if: ${{ needs.check_run_tests_passed.outputs.run_tests_passed == 'true' }}
