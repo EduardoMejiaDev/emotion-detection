@@ -9,6 +9,7 @@
 - pip install keras
 - pip3 install --upgrade tensorflow
 - pip install pillow
+- pip install flask
 
 ### download FER2013 dataset
 
