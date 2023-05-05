@@ -28,3 +28,18 @@ jobs:
 
       - name: Run tests
         run: python TestEmotionDetector.py
+      
+      - name: Set status
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            Status Check
+
+            {% if job.status == 'success' %}
+            ✅ All checks passed.
+            {% else %}
+            ❌ Some checks failed.
+            {% endif %}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
