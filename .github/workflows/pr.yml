@@ -29,12 +29,10 @@ jobs:
       - name: Run tests
         id: run_tests
         run: python TestEmotionDetector.py
-        timeout-minutes: 5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        timeout-minutes: 0.5
 
       - name: Check Flask App
-        if: ${{ needs.run_tests.outputs.elapsed_time >= 60 }}
+        if: ${{ needs.run_tests.outputs.elapsed_time >= 30 }}
         run: |
           echo "::set-output name=flask_check_success::true"
 
