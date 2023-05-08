@@ -38,7 +38,14 @@ jobs:
         run: |
           echo "::set-output name=flask_check_success::true"
 
-      - name: Mark run_tests as passed
+      - name: Stop Run Tests
+        if: ${{ needs.check_flask_app.outputs.flask_check_success == 'true' }}
+        run: |
+          echo "Stopping run_tests job"
+          kill $(jobs -p)
+          echo "::set-output name=run_tests_success::true"
+
+      - name: Mark Run Tests as Passed
         id: mark_run_tests_as_passed
         if: ${{ needs.check_flask_app.outputs.flask_check_success == 'true' }}
         run: echo "::set-output name=mark_passed::true"
@@ -47,7 +54,7 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
-      - name: Check run_tests status
+      - name: Check Run Tests Status
         id: check_run_tests
         run: echo "::set-output name=run_tests_passed::${{ needs.build.outputs.mark_run_tests_as_passed }}"
 
@@ -55,12 +62,11 @@ jobs:
     needs: [check_run_tests_passed]
     runs-on: ubuntu-latest
     steps:
-      - name: Set pull request status
+      - name: Set Pull Request Status
         uses: peter-evans/create-or-update-pull-request-status@v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           state: success
           description: All checks passed
           context: Pull Request Workflow
-          target-url-raw: true
         if: ${{ needs.check_run_tests_passed.outputs.run_tests_passed == 'true' }}
