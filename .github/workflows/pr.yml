@@ -37,7 +37,7 @@ jobs:
           echo "::set-output name=flask_check_success::true"
 
       - name: Stop Run Tests
-        if: ${{ needs.check_flask_app.outputs.flask_check_success == 'true' }}
+        if: ${{ needs.run_tests.outputs.elapsed_time >= 30 }}
         run: |
           echo "Stopping run_tests job"
           kill $(jobs -p)
