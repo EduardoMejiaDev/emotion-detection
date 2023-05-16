@@ -4,11 +4,12 @@
 
 ### Packages need to be installed
 
-- pip install numpy
-- pip install opencv-python
-- pip install keras
-- pip3 install --upgrade tensorflow
-- pip install pillow
+- `pip install numpy`
+- `pip install opencv-python`
+- `pip install keras`
+- `pip3 install --upgrade tensorflow`
+- `pip install pillow`
+- `pip install flask`
 
 ### download FER2013 dataset
 
@@ -18,7 +19,7 @@
 ### Train Emotion detector
 
 - with all face expression images in the FER2013 Dataset
-- command --> python TranEmotionDetector.py
+- command --> `python TranEmotionDetector.py`
 
 It will take several hours depends on your processor. (On i7 processor with 16 GB RAM it took me around 4 hours)
 after Training , you will find the trained model structure and weights are stored in your project directory.
@@ -29,4 +30,4 @@ copy these two files create model folder in your project directory and paste it.
 
 ### run your emotion detection test file
 
-python TestEmotionDetector.py
+`python TestEmotionDetector.py` at least for locally, it will run on `localhost:5000` and you must to hit `/video_feed` endpoint
